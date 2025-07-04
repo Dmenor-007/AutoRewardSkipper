@@ -1,0 +1,55 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.autorewards">
+
+    <!-- Permissões necessárias -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="AutoRewardSkipper"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Activity principal -->
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Tela de configurações -->
+        <activity android:name=".ConfigActivity"/>
+
+        <!-- Serviços -->
+
+        <!-- 1. OCR / captura de tela -->
+        <service
+            android:name=".ScreenCaptureService"
+            android:foregroundServiceType="mediaProjection"/>
+
+        <!-- 2. Swipe automático (Accessibility) -->
+        <service
+            android:name=".GestureAutomatorService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_config"/>
+        </service>
+
+        <!-- 3. Botão flutuante -->
+        <service android:name=".FloatingButtonService"/>
+
+        <!-- 4. Monitor de app ativo -->
+        <service android:name=".AppMonitorService"/>
+
+        <!-- Broadcast para conectar OCR → swipe -->
+        <receiver android:name=".RewardReceiver"/>
+
+    </application>
+</manifest>
